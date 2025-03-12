@@ -35,7 +35,6 @@
    git clone https://github.com/tomas0821/CV-2d-collisions.git
    cd CV-2d-collisions
 
-```markdown
 ## Usage
 
 ### Select Ball Type:
