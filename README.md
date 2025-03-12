@@ -35,7 +35,14 @@
    git clone https://github.com/tomas0821/CV-2d-collisions.git
    cd CV-2d-collisions
 
+2. **Intalling dependencies:**
 
+   ```bash
+   pip install -r requirements.txt
+
+3. **Running:**
+   ```bash
+   python collision.py
 
 ## How the Code Works
 
