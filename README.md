@@ -35,32 +35,50 @@
    git clone https://github.com/tomas0821/CV-2d-collisions.git
    cd CV-2d-collisions
 
-## Usage
 
-### Select Ball Type:
-* When tracking is not active, press **'1'** to cycle the type for **Ball 1** and **'2'** for **Ball 2**.  
-  The current selection is displayed in the bottom-left corner.
 
-### Start Tracking:
-* Press **'S'** to start tracking.  
-  The application uses YOLO to detect and track the balls, drawing trajectories and velocity vectors.
+## How the Code Works
 
-### Interact with Velocity Vectors:
-* Click anywhere on a velocity vector to select it.
-* The selected vector will be highlighted in **yellow**, and its velocity (in **cm/s**) will be displayed at the bottom-right corner.
+The program uses **YOLO object detection** and **OpenCV** to track two balls in real time, drawing their **trajectories** and **velocity vectors**. The user can interact with the interface to analyze motion data.
 
-### Toggle Displays:
-* Press **'T'** to toggle the trajectory display.
-* Press **'V'** to toggle the velocity vector display.
+### **1. Initialization**
+- The webcam is accessed using OpenCV (`cv2.VideoCapture(0)`).
+- The YOLO model (`pingpong_11n.pt`) is loaded using the `ultralytics` package.
+- The display window is resizable (`cv2.WINDOW_NORMAL`).
+- Variables for tracking positions, velocities, and user interactions are initialized.
 
-### Stop Tracking:
-* Press **'Y'** to stop tracking.
+### **2. Ball Detection & Tracking**
+- YOLO detects balls in each frame, returning bounding box coordinates.
+- Each detected ball is **assigned a label** ("Ball 1" or "Ball 2") to maintain identity across frames.
+- The **center of each ball** is recorded for trajectory tracking.
+- The ball’s type (Ping Pong, Golf, Hollow Golf, Small Ball) is selectable via **keys '1' and '2'** before starting.
 
-### Reset:
-* Press **'R'** to reset all data (trajectories, velocity vectors, and ball type selections).
+### **3. Velocity Calculation & Visualization**
+- Velocity is computed as **displacement over time** in **pixels per second**.
+- Using the ball’s known physical diameter, the code **converts pixels to cm** for real-world velocity.
+- Velocity vectors are drawn as **arrows** indicating direction and speed.
+- The user can **toggle trajectory (T) and velocity vectors (V)** on or off.
 
-### Quit:
-* Press **'Q'** to quit the application.
+### **4. Interactive Features**
+- **Clicking on a velocity vector** highlights it in yellow and displays its velocity.
+- The selected ball's velocity remains visible until a new selection is made.
+- The user can start (`S`), stop (`Y`), reset (`R`), and quit (`Q`) tracking.
+
+### **5. Key Functionalities & Controls**
+| Key  | Function |
+|------|----------|
+| **S**  | Start tracking |
+| **Y**  | Stop tracking |
+| **R**  | Reset all data |
+| **T**  | Toggle trajectory display |
+| **V**  | Toggle velocity vector display |
+| **1**  | Cycle through ball types for Ball 1 |
+| **2**  | Cycle through ball types for Ball 2 |
+| **Q**  | Quit program |
+
+This system enables real-time analysis of motion dynamics in **2D collisions**, making it a useful tool for **physics demonstrations and sports analysis**.
+
+
 
 ---
 
