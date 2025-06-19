@@ -1,105 +1,81 @@
-# CV 2d collisions
+# 2D Collision Analyzer using OpenCV and YOLO
 
-**CV 2d collisions** is a computer vision project that tracks objects in 2D space using a YOLO model and OpenCV. This tool is designed to analyze collisions by tracking different types of balls (Ping Pong, Golf, Hollow Golf, and Small Ball) and visualizing their trajectories and velocity vectors. The application allows you to select the ball type for each ball before starting a run, toggle the display of trajectories and velocity vectors, and interactively click on a velocity vector to reveal its velocity (converted from pixels/s to cm/s using the known ball diameter).
+This Python script uses a standard webcam and a YOLOv8 object detection model to perform a 2D physics analysis of collisions between two identical objects (e.g., ping-pong balls). It tracks the objects in real-time, detects collision events, and calculates pre- and post-collision velocities to analyze momentum and kinetic energy.
 
 ## Features
 
-- **Multi-Ball Type Support:**  
-  Select from four ball types:
-  - **Ping Pong:** 4.0 cm diameter
-  - **Golf:** 4.0 cm diameter
-  - **Hollow Golf:** 4.0 cm diameter
-  - **Small Ball:** 2.5 cm diameter  
-  Use keys **1** (for Ball 1) and **2** (for Ball 2) to cycle through the available ball types before starting a run. The current selection is displayed in the bottom-left corner.
+-   **Real-time Tracking:** Tracks two objects simultaneously using their center points.
+-   **Scale Calibration:** A simple mouse-click calibration allows you to convert pixel distances to real-world units (cm).
+-   **Advanced Collision Detection:** Uses a robust, multi-factor system to detect collisions, requiring both a sharp change in direction and physical proximity.
+-   **Physics Analysis:** Automatically generates a command-line report after each collision, detailing:
+    -   Pre- and post-collision speeds for each object.
+    -   Velocity components (Vx, Vy) for each object.
+    -   Total system momentum (vector components Px, Py).
+    -   Total system kinetic energy.
+-   **Multi-Collision Support:** Automatically resets after a collision is reported, allowing for the analysis of multiple events in a single session.
+-   **Visual Feedback:**
+    -   Displays object markers and IDs.
+    -   Draws velocity vectors (pre- and post-collision) on-screen for intuitive analysis.
 
-- **Real-Time Tracking:**  
-  Uses a YOLO model to detect and track two balls simultaneously.
+## Requirements
 
-- **Trajectory & Velocity Visualization:**  
-  - Draws trajectories (as lines) and velocity vectors (as arrows) on the video feed.
-  - Toggle the display of trajectories and velocity vectors using **'T'** and **'V'** keys.
+You will need Python 3 installed, along with the following libraries:
 
-- **Interactive Velocity Vector Selection:**  
-  - Click anywhere along a velocity vector to select it.
-  - The selected vector is highlighted in yellow.
-  - Its velocity is displayed in cm/s at the bottom-right corner (conversion is based on the known ball diameter).
+-   `ultralytics`
+-   `opencv-python`
+-   `numpy`
 
-- **Resizable Interface:**  
-  The display window is resizable, allowing you to adjust the view as needed.
+You will also need a YOLOv8 model file (`.pt`) trained to detect the objects you want to track. A pre-trained model for ping-pong balls (`pingpong_11n.pt`) is specified in the code.
 
-## Installation & Setup
+## Setup
 
-1. **Clone the Repository:**
+1.  **Clone the Repository:**
+    ```bash
+    git clone <your-repo-url>
+    cd <your-repo-directory>
+    ```
 
-   ```bash
-   git clone https://github.com/tomas0821/CV-2d-collisions.git
-   cd CV-2d-collisions
+2.  **Install Dependencies:**
+    ```bash
+    pip install ultralytics opencv-python numpy
+    ```
 
-2. **Intalling dependencies:**
+3.  **Download YOLO Model:**
+    Place your trained YOLOv8 model file (e.g., `pingpong_11n.pt`) in the same directory as the Python script. Ensure the `MODEL_PATH` variable in the script matches the name of your model file.
 
-   ```bash
-   pip install -r requirements.txt
+## How to Run
 
-3. **Running:**
-   ```bash
-   python collision.py
+1.  **Execute the Script:**
+    Run the script from your terminal:
+    ```bash
+    python your_script_name.py
+    ```
+    A window titled "Elastic Collision Analyzer" will open, showing your webcam feed.
 
-## How the Code Works
+2.  **Calibrate:**
+    -   Place an object of a known length (e.g., a 10 cm ruler) in the camera's view.
+    -   Click on one end of the object in the window.
+    -   Click on the other end.
+    -   The terminal will print a "Calibration Complete!" message.
 
-The program uses **YOLO object detection** and **OpenCV** to track two balls in real time, drawing their **trajectories** and **velocity vectors**. The user can interact with the interface to analyze motion data.
+3.  **Track and Analyze:**
+    -   Press the `'s'` key to start tracking.
+    -   Introduce the two balls into the frame and initiate a collision.
+    -   The script will automatically detect the collision, wait for the post-collision paths to stabilize, and print a full analysis report in the terminal.
+    -   After a report is printed, the system is ready to detect the next collision.
 
-### **1. Initialization**
-- The webcam is accessed using OpenCV (`cv2.VideoCapture(0)`).
-- The YOLO model (`pingpong_11n.pt`) is loaded using the `ultralytics` package.
-- The display window is resizable (`cv2.WINDOW_NORMAL`).
-- Variables for tracking positions, velocities, and user interactions are initialized.
+4.  **Controls:**
+    -   `s`: Start/Stop tracking.
+    -   `r`: Reset calibration and all tracking data.
+    -   `q`: Quit the application.
 
-### **2. Ball Detection & Tracking**
-- YOLO detects balls in each frame, returning bounding box coordinates.
-- Each detected ball is **assigned a label** ("Ball 1" or "Ball 2") to maintain identity across frames.
-- The **center of each ball** is recorded for trajectory tracking.
-- The ball’s type (Ping Pong, Golf, Hollow Golf, Small Ball) is selectable via **keys '1' and '2'** before starting.
+## Configuration
 
-### **3. Velocity Calculation & Visualization**
-- Velocity is computed as **displacement over time** in **pixels per second**.
-- Using the ball’s known physical diameter, the code **converts pixels to cm** for real-world velocity.
-- Velocity vectors are drawn as **arrows** indicating direction and speed.
-- The user can **toggle trajectory (T) and velocity vectors (V)** on or off.
+You can adjust the tracking and detection behavior by modifying the configuration variables at the top of the script:
 
-### **4. Interactive Features**
-- **Clicking on a velocity vector** highlights it in yellow and displays its velocity.
-- The selected ball's velocity remains visible until a new selection is made.
-- The user can start (`S`), stop (`Y`), reset (`R`), and quit (`Q`) tracking.
-
-### **5. Key Functionalities & Controls**
-| Key  | Function |
-|------|----------|
-| **S**  | Start tracking |
-| **Y**  | Stop tracking |
-| **R**  | Reset all data |
-| **T**  | Toggle trajectory display |
-| **V**  | Toggle velocity vector display |
-| **1**  | Cycle through ball types for Ball 1 |
-| **2**  | Cycle through ball types for Ball 2 |
-| **Q**  | Quit program |
-
-This system enables real-time analysis of motion dynamics in **2D collisions**, making it a useful tool for **physics demonstrations and sports analysis**.
-
-
-
----
-
-## Customization
-
-### Changing Resolution:
-* You can increase the window size by modifying the `FRAME_WIDTH` and `FRAME_HEIGHT` variables.  
-  The window is created with `cv2.WINDOW_NORMAL` for manual resizing.
-
-### Pixel to Centimeter Conversion:
-* The code converts velocities from pixels/s to cm/s using the known ball diameter:
-  * **Ping Pong, Golf, Hollow Golf:** **4.0 cm** diameter
-  * **Small Ball:** **2.5 cm** diameter
-
-### Mouse Callback:
-* Click on any part of a velocity vector to reveal its velocity info at the bottom-right corner.
-```
+-   `SCALE_LENGTH_CM`: The length of your reference object for calibration.
+-   `MODEL_PATH`: The filename of your YOLO model.
+-   `CONFIDENCE_THRESHOLD`: The minimum confidence for a detection to be considered valid (0.0 to 1.0).
+-   `DIRECTION_CHANGE_THRESHOLD_DEGREES`: The angle that defines a "sharp turn" for collision detection.
+-   `COLLISION_DISTANCE_FACTOR`: A multiplier for how close the objects must be to trigger a collision.
+-   `VECTOR_SCALE`: A visual multiplier to make the drawn velocity vectors longer and more visible.
